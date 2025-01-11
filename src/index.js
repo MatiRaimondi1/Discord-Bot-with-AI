@@ -24,6 +24,12 @@ client.on('messageCreate', async (message) => {
     if (message.author.bot) return;
     if (!CHANNELS.includes(message.channelId) && !message.mentions.users.has(client.user.id)) return;
 
+    await message.channel.sendTyping();
+
+    const sendTypingInterval = setInterval(() => {
+        message.channel.sendTyping();
+    }, 5000);
+
     const response = await openai.chat.completions.create({
         model: 'gpt-3.5-turbo',
         messages: [
@@ -37,6 +43,8 @@ client.on('messageCreate', async (message) => {
             }
         ]
     }).catch((error) => console.error('OpenAI error: ', error));
+
+    clearInterval(sendTypingInterval);
 
     message.reply(response.choices[0].message.content);
 });
