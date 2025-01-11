@@ -30,18 +30,40 @@ client.on('messageCreate', async (message) => {
         message.channel.sendTyping();
     }, 5000);
 
+    let conversation = [];
+    conversation.push({
+        role: 'system',
+        content: 'Chat GPT is a friendly chatbot.'
+    });
+
+    let previousMessages = await message.channel.messages.fetch({ limit: 10 });
+    previousMessages.reverse();
+
+    previousMessages.forEach((msg) => {
+        if (msg.author.bot && msg.author.id !== client.user.id) return;
+
+        const username = msg.author.username.replace(/\s+/g, '_').replace(/[^\w\s]/gi, '');
+
+        if (msg.author.id === client.user.id) {
+            conversation.push({
+                role: 'assistant',
+                name: username,
+                content: msg.content,
+            });
+
+            return;
+        }
+
+        conversation.push({
+            role: 'user',
+            name: username,
+            content: msg.content,
+        });
+    })
+
     const response = await openai.chat.completions.create({
         model: 'gpt-3.5-turbo',
-        messages: [
-            {
-                role: 'system',
-                content: "Chat GPT is a friendly chatbot."
-            },
-            {
-                role: 'user',
-                content: message.content,
-            }
-        ]
+        messages: conversation,
     }).catch((error) => console.error('OpenAI error: ', error));
 
     clearInterval(sendTypingInterval);
