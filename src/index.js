@@ -10,6 +10,8 @@ const client = new Client({
     ]
 });
 
+const CHANNELS = ['1290391610906906694']
+
 const openai = new OpenAI({
     apiKey: process.env.API_KEY,
 });
@@ -20,6 +22,7 @@ client.on('ready', () => {
 
 client.on('messageCreate', async (message) => {
     if (message.author.bot) return;
+    if (!CHANNELS.includes(message.channelId) && !message.mentions.users.has(client.user.id)) return;
 
     const response = await openai.chat.completions.create({
         model: 'gpt-3.5-turbo',
