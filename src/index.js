@@ -46,6 +46,11 @@ client.on('messageCreate', async (message) => {
 
     clearInterval(sendTypingInterval);
 
+    if (!response) {
+        message.reply("There was an error with the OpenAI API. Try again later.");
+        return;
+    }
+
     message.reply(response.choices[0].message.content);
 });
 
