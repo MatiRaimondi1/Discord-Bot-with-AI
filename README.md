@@ -1,2 +1,4 @@
-# Discord-Bot-with-AI
-A simple Discord bot that connects to the OpenAI API and works as a chat bot.
+# Discord Bot w/ AI
++ Simple Discord Bot made with JavaScript.
++ Makes use of the Open AI API. (You need to have credits in your account)
++ Easy to deploy.
